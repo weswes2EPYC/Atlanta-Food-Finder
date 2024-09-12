@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
+{% load static %}
 
+{% block staticfiles %}
+    <link rel="stylesheet" href="{% static 'main/home.css' %}">
+{% endblock %}
 
 {% block content %}
-
-<div>
-    {% csrf_token %}
-    <h1>Atlanta Food Finder</h1>
-</div>
+    <div>
+        {% csrf_token %}
+        <h1>Atlanta Food Finder</h1>
+        <p>Here</p>
+    </div>
 {% endblock %}
