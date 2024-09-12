@@ -11,7 +11,6 @@ from django.utils.decorators import method_decorator
 
 from food_finder.mixins import(
 	AjaxFormMixin, 
-	reCAPTCHAValidation,
 	FormErrors,
 	RedirectParams,
 	)
@@ -19,7 +18,6 @@ from food_finder.mixins import(
 
 from .forms import (
 	UserForm,
-	UserProfileForm,
 	AuthForm,
 	)
 
