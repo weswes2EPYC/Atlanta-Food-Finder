@@ -5,6 +5,18 @@
         <title>My Project</title>
         <link rel="stylesheet" href="{% static 'style.css' %}">
         {% block staticfiles %} {% endblock staticfiles %}
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                    colors: {
+                        "stroke-gray": "#E9E9E9",
+                        "primary-blue": "#09A2C1"
+                    }
+                    }
+                }
+            }
+        </script>
     </head>
 
     <body>
