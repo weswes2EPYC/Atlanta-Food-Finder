@@ -1,0 +1,75 @@
+{% if request.user.is_authenticated %}
+<ul class="nav">
+    {% if request.path == "/" %}
+    <li><a class="active" href="{% url 'signin' %}">User Account</a></li>
+    {% else %}
+    <li><a href="{% url 'signin' %}">User Account</a></li>
+    {% endif %}
+
+    {% if "route" in request.path %}
+    <li><a class="active" href="{% url 'signin' %}">Route</a></li>
+    {% else %}
+    <li><a href="{% url 'signin' %}">Route</a></li>
+    {% endif %}
+
+    {% if "map" in request.path %}
+    <li><a class="active" href="{% url 'signin' %}">Map</a></li>
+    {% else %}
+    <li><a href="{% url 'signin' %}">Map</a></li>
+    {% endif %}
+
+    {% if "sign-out" in request.path %}
+    <li><a class="active" href="{% url 'signin' %}">Sign Out</a></li>
+    {% else %}
+    <li><a href="{% url 'signin' %}">Sign Out</a></li>
+    {% endif %}
+
+</ul>
+{% else %}
+<ul class="nav">
+
+    {% if "sign-in" in request.path %}
+    <li><a class="active" href="{% url 'signin' %}">Sign In</a></li>
+    {% else %}
+    <li><a href="{% url 'signin' %}">Sign In</a></li>
+    {% endif %}
+
+    {% if "sign-up" in request.path %}
+    <li><a class="active" href="{% url 'signup' %}">Sign Up</a></li>
+    {% else %}
+    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+    {% endif %}
+</ul>
+{% endif %}
+
+<style>
+    .nav {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav li {
+        list-style: none;
+        margin-right: 20px;
+        /* Spacing between left-aligned items */
+    }
+
+    .right-nav {
+        margin-left: auto;
+        /* Push the last element (Sign Up) to the right */
+    }
+
+    .nav a {
+        text-decoration: none;
+        padding: 10px 15px;
+        color: black;
+        font-weight: bold;
+    }
+
+    .nav a.active {
+        color: blue;
+    }
+</style>
