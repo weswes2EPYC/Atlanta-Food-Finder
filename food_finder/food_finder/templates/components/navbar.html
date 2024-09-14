@@ -1,75 +1,106 @@
 {% if request.user.is_authenticated %}
-<ul class="nav">
-    {% if request.path == "/" %}
-    <li><a class="active" href="{% url 'signin' %}">User Account</a></li>
-    {% else %}
-    <li><a href="{% url 'signin' %}">User Account</a></li>
-    {% endif %}
+<div class="wrapper">
+    <nav>
+        <div class="logo">foodr.</div>
+        <ul class="nav-links">
+            <li><a class="active" href="{% url 'signin' %}">Map</a></li>
 
-    {% if "route" in request.path %}
-    <li><a class="active" href="{% url 'signin' %}">Route</a></li>
-    {% else %}
-    <li><a href="{% url 'signin' %}">Route</a></li>
-    {% endif %}
-
-    {% if "map" in request.path %}
-    <li><a class="active" href="{% url 'signin' %}">Map</a></li>
-    {% else %}
-    <li><a href="{% url 'signin' %}">Map</a></li>
-    {% endif %}
-
-    {% if "sign-out" in request.path %}
-    <li><a class="active" href="{% url 'signin' %}">Sign Out</a></li>
-    {% else %}
-    <li><a href="{% url 'signin' %}">Sign Out</a></li>
-    {% endif %}
-
-</ul>
+            <li><a class="active" href="{% url 'signin' %}">Saved</a></li>
+        </ul>
+        <ul class="nav-buttons">
+            <li><a class="active button" href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </nav>
+</div>
 {% else %}
-<ul class="nav">
+<div class="wrapper">
+    <nav>
+        <div class="logo">foodr.</div>
+        <ul class="nav-links">
 
-    {% if "sign-in" in request.path %}
-    <li><a class="active" href="{% url 'signin' %}">Sign In</a></li>
-    {% else %}
-    <li><a href="{% url 'signin' %}">Sign In</a></li>
-    {% endif %}
+            <li><a class="active" href="{% url 'signin' %}">Map</a></li>
+        </ul>
+        <ul class="nav-buttons">
+            <li><a class="active button" href="{% url 'signup' %}">Sign Up</a></li>
 
-    {% if "sign-up" in request.path %}
-    <li><a class="active" href="{% url 'signup' %}">Sign Up</a></li>
-    {% else %}
-    <li><a href="{% url 'signup' %}">Sign Up</a></li>
-    {% endif %}
-</ul>
+            <li><a class="active button" href="{% url 'signin' %}">Login</a></li>
+        </ul>
+    </nav>
+</div>
 {% endif %}
 
+
 <style>
-    .nav {
-        display: flex;
-        align-items: center;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+    :root {
+    --light-blue-color: #09A2C1;
+    --white-color: #FFFFFF;
+    --dark-blue-color: #2F3C4B;
+    --light-gray-color: #E9E9E9;
+}
 
-    .nav li {
-        list-style: none;
-        margin-right: 20px;
-        /* Spacing between left-aligned items */
-    }
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
 
-    .right-nav {
-        margin-left: auto;
-        /* Push the last element (Sign Up) to the right */
-    }
+.wrapper {
+    max-width: 1440px;
+    margin: 0 auto;
+}
 
-    .nav a {
-        text-decoration: none;
-        padding: 10px 15px;
-        color: black;
-        font-weight: bold;
-    }
+.button {
+    padding: 10px 30px;
+    border-radius: 15px;
+    color: white;
+    display: inline-block;
+    font-weight: 500;
+    font-size: 20px;
+    background: var(--light-blue-color);
+    text-decoration: none;
+}
 
-    .nav a.active {
-        color: blue;
-    }
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+nav .logo {
+    color: var(--light-blue-color);
+    font-family: "Outfit", sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    margin-right: 50px;
+}
+
+nav ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+}
+
+.nav-links {
+    gap: 60px;
+    margin-right: auto;
+}
+
+.nav-buttons {
+    gap: 20px;
+    margin-left: auto;
+}
+
+nav ul li a {
+    color: var(--dark-blue-color);
+    font-family: "Inter", sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* nav ul li a.active {
+    color: var(--light-blue-color);
+} */
 </style>
