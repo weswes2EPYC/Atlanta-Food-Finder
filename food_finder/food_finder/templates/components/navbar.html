@@ -19,9 +19,9 @@
     {% endif %}
 
     {% if "sign-out" in request.path %}
-    <li><a class="active" href="{% url 'signin' %}">Sign Out</a></li>
+    <li><a class="active" href="{% url 'logout' %}">Sign Out</a></li>
     {% else %}
-    <li><a href="{% url 'signin' %}">Sign Out</a></li>
+    <li><a href="{% url 'logout' %}">Sign Out</a></li>
     {% endif %}
 
 </ul>
