@@ -9,26 +9,43 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAB4mZM4o2Oe4_-ZHmH9gTI3o-gj00pEg4&libraries=places"></script>
 
 <script>
-    // Initialize Google Places Autocomplete
-    function initAutocomplete() {
+    // Function to initialize Google Places Autocomplete with location bounds
+    function initAutocomplete(position) {
         const input = document.getElementById('autocomplete');
 
-        const atlantaBounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(33.647808, -84.551086),  // Southwest coordinates
-            new google.maps.LatLng(33.886885, -84.289311)   // Northeast coordinates
-        );
+        // Create a bounds object centered around the user's location
+        const userLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
         const options = {
-            bounds: atlantaBounds,
+            bounds: new google.maps.LatLngBounds(userLocation),  // Bound results around the user
             types: ['restaurant'],
             componentRestrictions: { country: 'us' }
         };
+
+        // Initialize autocomplete with the options
         const autocomplete = new google.maps.places.Autocomplete(input, options);
 
+        // Add listener for place selection
         autocomplete.addListener('place_changed', function () {
             const place = autocomplete.getPlace();
             console.log(place);
         });
+    }
+
+    // Function to get user's current location
+    function getUserLocation() {
+        // Check if browser supports Geolocation API
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(initAutocomplete, handleLocationError);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    // Handle location errors (e.g., user denies location access)
+    function handleLocationError(error) {
+        console.error("Error retrieving location: ", error.message);
+        alert("Could not retrieve your location. Please enable location services or enter manually.");
     }
 
     // Handle form submission
@@ -42,9 +59,9 @@
         }
     });
 
-    // Initialize autocomplete when the page loads
+    // Initialize getting user's location when the page loads
     window.onload = function () {
-        initAutocomplete();
+        getUserLocation();  // Get user's location and initialize autocomplete
     };
 </script>
 
@@ -66,6 +83,7 @@
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
         outline: none;
         transition: box-shadow 0.3s ease-in-out;
+        background-color: #E9E9E9;
     }
 
     #autocomplete:focus {
