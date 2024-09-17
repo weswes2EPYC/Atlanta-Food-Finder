@@ -2,13 +2,47 @@
 {% load static %}
 
 {% block staticfiles %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?
+        family=Inter:ital,opsz,wght@0,14..32,700;1,14..32,700&
+        family=Outfit:wght@100..900&display=swap" rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="{% static 'main/home.css' %}">
 {% endblock %}
 
 {% block content %}
-    <div>
-        {% csrf_token %}
-        <h1>Atlanta Food Finder</h1>
-        <p>Here</p>
-    </div>
+    <header>
+        <div class = "wrapper">
+            <nav>
+                <div class="logo">foodr.</div>
+
+                <ul>
+                    <li>
+                        <a href="#">Map</a>
+                    </li>
+                    <li>
+                        <a href="#">Log In</a>
+                    </li>
+                    <li>
+                        <a href="#" class="button">Sign Up</a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- Desktop Nav Menu^ -->
+            <div class="search-section">
+                <h1>Find your next <span class = "highlight">delicious</span> meal!</h1>
+                <form>
+                    <div class = "search">
+                        <span class = "search-icon material-symbols-outlined">search</span>
+                        <input class="search-input" type="search" placeholder="i.e. South City Kitchen Midtown, chinese, buckhead">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </header>
 {% endblock %}
