@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Component</title>
+    <style>
+        .restaurant-card {
+            width: 300px;
+            height: 450px;
+            background-color: white;
+            border-radius: 20px; /* Increased from 10px */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added box-shadow */
+            text-align: center;
+            font-family: Arial, sans-serif;
+            padding: 10px; /* Added padding to accommodate shadow */
+        }
+
+        .restaurant-image {
+            width: 300px;
+            height: 300px;
+            background-color: lightgray;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .restaurant-name {
+            font-size: 36px;
+            margin: 10px 0;
+            color: black;
+        }
+
+        .restaurant-rating {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gold-star {
+            font-size: 24px;
+            color: gold;
+            margin-right: 5px;
+        }
+
+        .review-text {
+            font-size: 22px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="restaurant-card">
+        <!-- Restaurant Image Placeholder -->
+        <div class="restaurant-image">
+            <img src="{{ restaurant_image_url }}" alt="Restaurant Image"
+                style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+
+        <!-- Restaurant Name -->
+        <div class="restaurant-name">
+            {{ restaurant_name }}
+        </div>
+
+        <!-- Restaurant Rating and Reviews -->
+        <div class="restaurant-rating">
+            <span class="gold-star">★</span>
+            <span class="review-text">{{ restaurant_rating }} ({{ restaurant_reviews }} reviews)</span>
+        </div>
+    </div>
+</body>
+
+</html>

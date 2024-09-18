@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block staticfiles %}
+<link rel="stylesheet" href="{% static 'main/restaurants.css' %}">
+{% endblock %}
+
+{% block content %}
+<body>
+    <h1>Restaurants</h1>
+
+    <h2>'{{ query }}'</h2>
+
+
+    <div class="restaurant-list">
+        {% for restaurant in restaurants %}
+        {% include 'components/restaurant_card.html' with restaurant_name=restaurant.name restaurant_image_url="https://maps.googleapis.com/maps/api/place/photo?maxwidth=300&photoreference={{restaurant.image_url }}&key={{ GOOGLE_PLACES_API_KEY }}" restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews %}
+        {% endfor %}
+    </div>
+
+    {% if not restaurants %}
+    <p>No restaurants found for "{{ query }}".</p>
+    {% endif %}
+</body>
+{% endblock %}
