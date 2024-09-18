@@ -27,8 +27,15 @@ def restaurants_view(request):
     restaurants = []
     if 'results' in data:
         for result in data['results']:
+            # Construct the photo URL using the photo_reference
+            photo_reference = result.get('photos', [{}])[0].get('photo_reference', '')
+            if photo_reference:
+                image_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=300&photoreference={photo_reference}&key={settings.GOOGLE_PLACES_API_KEY}"
+            else:
+                image_url = '/path/to/default/image.jpg'  # Fallback image if no photo is available
+
             restaurant = {
-                'image_url': result.get('photos', [{}])[0].get('photo_reference', ''),
+                'image_url': image_url,
                 'name': result.get('name', 'Unknown'),
                 'rating': result.get('rating', 'N/A'),
                 'reviews': result.get('user_ratings_total', 'N/A'),
