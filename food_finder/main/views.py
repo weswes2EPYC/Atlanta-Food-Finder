@@ -1,30 +1,41 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+import googlemaps
+import json
+
+# this is temporary, change this to .env later
+API_KEY = "" # add your own api key
 
 # Create your views here.
 def returnHomePage(request):
     return render(request, 'main/home.html', {'isLoggedIn': False})
 
 def restaurantDetailsPage(request, restaurant_id):
-    print(restaurant_id)
-    return render(request, 'main/details.html', {
-        "name": "Lucky Buddha",
-        "image_url": "https://cdn.usarestaurants.info/assets/uploads/3bdbe73b33fa800fc27e545c68ade271_-united-states-georgia-fulton-county-atlanta-lucky-buddha-404-885-1518htm.jpg",
-        "num_reviews": "201",
-        "rating": "4.2",
-        "genre": "Chinese, Fast Food",
-        "address": "529 10th St NW, Atlanta, GA 30318",
-        "distance": "1.1 mi",
-        "phone": "(404)-249-9883",
-        "reviews": [
-            {
-                "author": "John Doe",
-                "rating": "4.2",
-                "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            },
-            {
-                "author": "Jane Doe",
-                "rating": "3.6",
-                "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            }
-        ]
-    })
+    try:
+        restaurant_id = "ChIJgUolJWwE9YgRnxg5IduXOsg"
+        gmaps = googlemaps.Client(key=API_KEY)
+        res = gmaps.place(restaurant_id)["result"]
+        if "restaurant" not in res["types"]:
+            return redirect("/") # redirect if not a restaurant
+        print("hi")
+        try:
+            photo = res["photos"][0]["photo_reference"]
+        except:
+            photo = "https://icons.veryicon.com/png/o/business/new-vision-2/picture-loading-failed-1.png"
+        print("hi2")
+        return render(request, 'main/details.html', {
+            "name": res["name"],
+            "image_url": f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photoreference={photo}&key={API_KEY}",
+            "num_reviews": res['user_ratings_total'],
+            "rating": res["rating"],
+            "address": res["formatted_address"],
+            "phone": res["formatted_phone_number"],
+            "reviews": res["reviews"],
+            "map": f"https://www.google.com/maps/embed/v1/place?key={API_KEY}&q=place_id:{restaurant_id}"
+        })
+    except:
+        return redirect("/") # if restaurant don't exist, redirect to home page
+    
+
+
+
+    
