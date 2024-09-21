@@ -4,15 +4,23 @@
     <head>
         <title>My Project</title>
         <link rel="stylesheet" href="{% static 'style.css' %}">
+        <script src="https://kit.fontawesome.com/8ce5e4a425.js" crossorigin="anonymous"></script>
         {% block staticfiles %} {% endblock staticfiles %}
         <script>
             tailwind.config = {
                 theme: {
                     extend: {
-                    colors: {
-                        "stroke-gray": "#E9E9E9",
-                        "primary-blue": "#09A2C1"
-                    }
+                        colors: {
+                            "stroke-gray": "#E9E9E9",
+                            "primary-blue": "#09A2C1",
+                            "med-gray": "#D9D9D9"
+                        },
+                        aspectRatio: {
+                            '4/3': '4 / 3',
+                        },
+                        boxShadow: {
+                            "center": "0 0px 5px rgba(0,0,0,0.15)"
+                        }
                     }
                 }
             }
@@ -21,7 +29,6 @@
 
     <body>
     {% include 'components/navbar.html' %}
-    {% include 'components/search_bar.html' %}
     {% block content %}{% endblock content %}
     </body>
 </html>
