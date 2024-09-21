@@ -2,24 +2,34 @@
 {% load static %}
 
 {% block staticfiles %}
-<link rel="stylesheet" href="{% static 'main/restaurants.css' %}">
+    <link rel="stylesheet" href="{% static 'restaurants.css' %}">
 {% endblock %}
 
 {% block content %}
 
 <body>
     <h1>Restaurants</h1>
+    {% include 'components/search_bar.html' %}
 
-    <h2>'{{ query }}'</h2>
-
-    <div class="restaurant-list">
-        {% for restaurant in restaurants %}
-        {% include 'components/restaurant_card.html' with restaurant_name=restaurant.name restaurant_image_url=restaurant.image_url restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews%}
-        {% endfor %}
+    <div class="content-wrapper">
+        <!-- Left side for restaurant cards -->
+        <div class="restaurant-list-wrapper">
+            <h2>'{{ query }}'</h2>
+            <div class="restaurant-list">
+                {% for restaurant in restaurants %}
+                <!-- Including restaurant_card.html component -->
+                {% include 'components/restaurant_card.html' with restaurant_name=restaurant.name restaurant_image_url=restaurant.image_url restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews restaurant_id=restaurant.place_id %}
+                {% endfor %}
+            </div>
+            {% if not restaurants %}
+            <p>No restaurants found for "{{ query }}".</p>
+            {% endif %}
+        </div>
+    
+        <div class="map-container">
+            <!-- Map will be displayed here -->
+        </div>
     </div>
-
-    {% if not restaurants %}
-    <p>No restaurants found for "{{ query }}".</p>
-    {% endif %}
 </body>
+
 {% endblock %}

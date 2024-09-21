@@ -1,29 +1,40 @@
 <form id="searchForm">
-    <!-- The input for the search query with autocomplete -->
     <input type="search" id="autocomplete" name="query" placeholder="i.e. South City Kitchen Midtown, Chinese, Buckhead"
         required>
 </form>
 
 <!-- Add the Google Places API Script -->
-<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAB4mZM4o2Oe4_-ZHmH9gTI3o-gj00pEg4&libraries=places"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAB4mZM4o2Oe4_-ZHmH9gTI3o-gj00pEg4&libraries=places"></script>
 
 <script>
     // Initialize Google Places Autocomplete
     function initAutocomplete() {
         const input = document.getElementById('autocomplete');
-
-        const atlantaBounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(33.647808, -84.551086),  // Southwest coordinates
-            new google.maps.LatLng(33.886885, -84.289311)   // Northeast coordinates
-        );
-
-        const options = {
-            bounds: atlantaBounds,
+        const autocomplete = new google.maps.places.Autocomplete(input, {
             types: ['restaurant'],
             componentRestrictions: { country: 'us' }
-        };
-        const autocomplete = new google.maps.places.Autocomplete(input, options);
+        });
+
+        // Use the Geolocation API to get the user's current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const userLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+                // Set the bounds to a certain radius around the user's location
+                const circle = new google.maps.Circle({
+                    center: userLocation,
+                    radius: 5000 // 5 km radius; adjust as needed
+                });
+
+                autocomplete.setBounds(circle.getBounds());
+            }, () => {
+                // Handle error if user denies location access
+                console.error("Geolocation permission denied.");
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            console.error("Geolocation is not supported by this browser.");
+        }
 
         autocomplete.addListener('place_changed', function () {
             const place = autocomplete.getPlace();
