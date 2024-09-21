@@ -9,6 +9,60 @@ h2 {
     padding-left: 40px;
 }
 
+.filter-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.filter-wrapper label {
+    font-size: 30px;
+    font-weight: 700;
+    margin-right: 10px;
+    color: #333;
+}
+
+#rating-filter {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    color: #333;
+    appearance: none;
+    background-color: #f0f0f0;
+    outline: none;
+    transition: border-color 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+#rating-filter:hover {
+    border-color: #888;
+}
+
+#rating-filter:focus {
+    border-color: #333;
+}
+
+#rating-filter::after {
+    content: '▼';
+    /* Add a custom arrow */
+    font-size: 12px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    pointer-events: none;
+}
+
+.filter-wrapper select {
+    width: 150px;
+    text-align: center;
+}
+
 .content-wrapper {
     margin-top: 50px;
     display: grid;

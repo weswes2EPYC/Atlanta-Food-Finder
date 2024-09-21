@@ -24,19 +24,17 @@
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
             overflow: hidden;
-            /* Ensures any overflow is hidden */
         }
 
         .restaurant-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Ensures the image covers the container and maintains aspect ratio */
         }
 
         .restaurant-name {
             font-size: 30px;
-            margin: 10px 0;
+            margin: 10px;
             color: black;
         }
 
@@ -61,17 +59,14 @@
 
 <body>
     <div class="restaurant-card">
-        <!-- Restaurant Image Placeholder -->
         <div class="restaurant-image">
             <img src="{{ restaurant_image_url }}" alt="Restaurant Image">
         </div>
 
-        <!-- Restaurant Name -->
         <div class="restaurant-name">
             {{ restaurant_name }}
         </div>
 
-        <!-- Restaurant Rating and Reviews -->
         <div class="restaurant-rating">
             <span class="gold-star">★</span>
             <span class="review-text">{{ restaurant_rating }} ({{ restaurant_reviews }} reviews)</span>
