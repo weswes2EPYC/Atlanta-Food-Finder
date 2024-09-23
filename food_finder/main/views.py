@@ -1,6 +1,8 @@
+# views.py
 from django.shortcuts import render
 import requests
 from django.conf import settings
+from django.http import JsonResponse
 
 def returnHomePage(request):
     return render(request, 'main/home.html', {'isLoggedIn': False})
@@ -8,6 +10,8 @@ def returnHomePage(request):
 def restaurants_view(request):
     query = request.GET.get('query', '')
     min_rating = request.GET.get('rating', 0)
+    user_latitude = request.GET.get('user_latitude')
+    user_longitude = request.GET.get('user_longitude')
 
     if not query:
         return render(request, 'main/restaurants.html', {'restaurants': [], 'query': query, 'selected_rating': min_rating})
@@ -18,7 +22,6 @@ def restaurants_view(request):
         'type': 'restaurant',
         'key': settings.GOOGLE_PLACES_API_KEY
     }
-    
     response = requests.get(url, params=params)
     data = response.json()
 
@@ -33,13 +36,43 @@ def restaurants_view(request):
                 else:
                     image_url = '/path/to/default/image.jpg'
 
+                latitude = result['geometry']['location']['lat']
+                longitude = result['geometry']['location']['lng']
+
+                # Get driving distance between user and restaurant (backend call)
+                if user_latitude and user_longitude:
+                    distance = get_driving_distance(user_latitude, user_longitude, latitude, longitude)
+                else:
+                    distance = 'N/A'
+
                 restaurant = {
                     'image_url': image_url,
                     'name': result.get('name', 'Unknown'),
                     'rating': rating,
                     'reviews': result.get('user_ratings_total', 'N/A'),
-                    'place_id': result.get('place_id', '')
+                    'place_id': result.get('place_id', ''),
+                    'latitude': latitude,
+                    'longitude': longitude,
+                    'distance': distance  # Add distance to restaurant data
                 }
                 restaurants.append(restaurant)
 
     return render(request, 'main/restaurants.html', {'restaurants': restaurants, 'query': query, 'selected_rating': min_rating})
+
+def get_driving_distance(origin_lat, origin_lng, dest_lat, dest_lng):
+    url = 'https://maps.googleapis.com/maps/api/distancematrix/json'
+    params = {
+        'origins': f'{origin_lat},{origin_lng}',
+        'destinations': f'{dest_lat},{dest_lng}',
+        'mode': 'driving',
+        'units': 'imperial',
+        'key': settings.GOOGLE_PLACES_API_KEY
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+
+    if data['status'] == 'OK' and data['rows']:
+        distance_element = data['rows'][0]['elements'][0]
+        if distance_element['status'] == 'OK':
+            return distance_element['distance']['text']
+    return 'N/A'

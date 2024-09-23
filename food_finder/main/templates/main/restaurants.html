@@ -28,8 +28,9 @@
             <h2>'{{ query }}'</h2>
             <div class="restaurant-list" id="restaurant-list">
                 {% for restaurant in restaurants %}
-                <div class="restaurant-card-wrapper" data-rating="{{ restaurant.rating }}">
-                    {% include 'components/restaurant_card.html' with restaurant_name=restaurant.name restaurant_image_url=restaurant.image_url restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews restaurant_id=restaurant.place_id %}
+                <div class="restaurant-card-wrapper" data-rating="{{ restaurant.rating }}" data-latitude="{{ restaurant.latitude }}"
+                    data-longitude="{{ restaurant.longitude }}">
+                    {% include 'components/restaurant_card.html' with restaurant_name=restaurant.name restaurant_image_url=restaurant.image_url restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews restaurant_distance=restaurant.distance%}
                 </div>
                 {% endfor %}
             </div>
@@ -37,28 +38,53 @@
             <p>No restaurants found for "{{ query }}".</p>
             {% endif %}
         </div>
-
+    
         <div class="map-container">
             <!-- Map will be displayed here -->
         </div>
     </div>
 
-    <script>
-        function filterRestaurants() {
-            const filterValue = parseInt(document.getElementById('rating-filter').value);
-            const restaurantCards = document.querySelectorAll('.restaurant-card-wrapper');
-
-            restaurantCards.forEach(card => {
-                const restaurantRating = parseInt(card.getAttribute('data-rating'));
-                if (restaurantRating >= filterValue) {
-                    card.style.display = 'block'; // Show card
-                } else {
-                    card.style.display = 'none'; // Hide card
-                }
-            });
-        }
-    </script>
 
 </body>
+
+<script>
+    getUserLocation()
+
+    function filterRestaurants() {
+        const filterValue = parseInt(document.getElementById('rating-filter').value);
+        const restaurantCards = document.querySelectorAll('.restaurant-card-wrapper');
+
+        restaurantCards.forEach(card => {
+            const restaurantRating = parseInt(card.getAttribute('data-rating'));
+            if (restaurantRating >= filterValue) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function getUserLocation() {
+            // Check if the URL already contains latitude and longitude parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const hasLatLong = urlParams.has('user_latitude') && urlParams.has('user_longitude');
+
+            // If latitude and longitude are not present in the URL, get user location
+            if (!hasLatLong && navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const userLatitude = position.coords.latitude;
+                    const userLongitude = position.coords.longitude;
+
+                    // Add latitude and longitude as query parameters in the URL
+                    window.location.href = `${window.location.pathname}?query=some-query&user_latitude=${userLatitude}&user_longitude=${userLongitude}`;
+                });
+            } else if (!navigator.geolocation) {
+                console.error("Geolocation is not supported by this browser.");
+            }
+        }
+
+
+</script>
+
 
 {% endblock %}
