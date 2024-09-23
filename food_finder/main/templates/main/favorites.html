@@ -12,14 +12,120 @@
         family=Outfit:wght@100..900&display=swap" rel="stylesheet"
     />
     <link rel="stylesheet" href="{% static 'main/favorites.css' %}">
+    <style>
+        .card h3 {
+            color: #000;
+            font-family: "Inter", sans-serif;
+            font-size: 36px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .card p {
+            color: #2F3C4B;
+            font-family: "Inter", sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        img {
+            width: 100%;
+            border-radius: 10px 10px 10px 10px;
+        }
+
+        .column {
+            float:left;
+            width: 32%;
+            padding: 10px 10px;
+        }
+
+        .row {
+            margin: 0 -5px;
+        }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear:both;
+        }
+
+        @media screen and (max-width: 1000px) {
+            .column {
+                width: 50%;
+                display: block;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .column {
+                width: 100%;
+                display: block;
+                margin-bottom: 20px;
+            }
+        }
+
+        .card {
+            padding: 16px;
+            text-align: center;
+            border-radius: 15px;
+            background: #FFF;
+            box-shadow: 0px 0px 10px 4px rgba(0, 0, 0, 0.10);
+            text-align: left;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <header>
-        <div class = "wrapper">
-            <nav>
-                
-            </nav>
+    <div class = "row">
+        <div class = "column">
+            <div class = "card">
+                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
+                <h3>Lucky Buddha</h3>
+                <p>4.2 (201 reviews)</p>
+            </div>
         </div>
-    </header>
+
+        <div class = "column">
+            <div class = "card">
+                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
+                <h3>Lucky Buddha</h3>
+                <p>4.2 (201 reviews)</p>
+            </div>
+        </div>
+
+        <div class = "column">
+            <div class = "card">
+                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
+                <h3>Lucky Buddha</h3>
+                <p>4.2 (201 reviews)</p>
+            </div>
+        </div>
+    </div>
+    <div class = "row">
+        <div class = "column">
+            <div class = "card">
+                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
+                <h3>Lucky Buddha</h3>
+                <p>4.2 (201 reviews)</p>
+            </div>
+        </div>
+
+        <div class = "column">
+            <div class = "card">
+                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
+                <h3>Lucky Buddha</h3>
+                <p>4.2 (201 reviews)</p>
+            </div>
+        </div>
+
+        <div class = "column">
+            <div class = "card">
+                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
+                <h3>Lucky Buddha</h3>
+                <p>4.2 (201 reviews)</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}
