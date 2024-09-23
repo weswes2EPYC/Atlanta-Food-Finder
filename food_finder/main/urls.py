@@ -4,6 +4,7 @@ from .views import returnHomePage
 
 urlpatterns = [
     path('', returnHomePage, name='home'),
-    path('restaurants/', views.restaurants_view, name='restaurants'),  # Ensure this URL is correct
+    path('restaurants/', views.restaurants_view, name='restaurants'),
+    path('restaurants.html', views.restaurants_view, name='restaurants')
     # ... other url patterns
 ]

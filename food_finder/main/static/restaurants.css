@@ -12,19 +12,39 @@ h2 {
 .filter-wrapper {
     display: flex;
     justify-content: center;
+    /* Center the filter group */
     align-items: center;
+    width: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
+    gap: 30px;
+    /* Provide space between items */
+    flex-wrap: wrap;
+    /* Allow wrapping if items can't fit in one row */
 }
 
-.filter-wrapper label {
-    font-size: 30px;
-    font-weight: 700;
+.filter-item {
+    display: flex;
+    align-items: center;
+    flex-basis: 20%;
+    max-width: 1000px;
+}
+
+.filter-item label {
+    font-size: 25px;
+    font-weight: 600;
     margin-right: 10px;
     color: #333;
+    white-space: nowrap;
 }
 
-#rating-filter {
+.filter-item select {
+    width: 100%;
+    max-width: 150px;
+    text-align: center;
+}
+
+#rating-filter, #distance-filter {
     padding: 10px;
     font-size: 16px;
     border: 2px solid #ccc;
@@ -40,27 +60,21 @@ h2 {
     font-family: Arial, sans-serif;
 }
 
-#rating-filter:hover {
+#rating-filter:hover, #distance-filter:hover {
     border-color: #888;
 }
 
-#rating-filter:focus {
+#rating-filter:focus, #distance-filter:focus {
     border-color: #333;
 }
 
-#rating-filter::after {
+#rating-filter::after, #distance-filter::after{
     content: '▼';
-    /* Add a custom arrow */
     font-size: 12px;
     position: absolute;
     right: 15px;
     top: 15px;
     pointer-events: none;
-}
-
-.filter-wrapper select {
-    width: 150px;
-    text-align: center;
 }
 
 .content-wrapper {

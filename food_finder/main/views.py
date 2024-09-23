@@ -1,8 +1,7 @@
-# views.py
 from django.shortcuts import render
 import requests
-from django.conf import settings
 from django.http import JsonResponse
+from django.conf import settings
 
 def returnHomePage(request):
     return render(request, 'main/home.html', {'isLoggedIn': False})
@@ -10,18 +9,25 @@ def returnHomePage(request):
 def restaurants_view(request):
     query = request.GET.get('query', '')
     min_rating = request.GET.get('rating', 0)
+    max_distance = float(request.GET.get('distance', 9999))
     user_latitude = request.GET.get('user_latitude')
     user_longitude = request.GET.get('user_longitude')
+    radius_miles = 10
+    radius_km = radius_miles * 1.60934
 
+    # Load the page if query is present
     if not query:
-        return render(request, 'main/restaurants.html', {'restaurants': [], 'query': query, 'selected_rating': min_rating})
+        return render(request, 'main/restaurants.html', {'restaurants': [], 'query': 'restaurants', 'selected_rating': min_rating})
 
+    # API call logic
     url = 'https://maps.googleapis.com/maps/api/place/textsearch/json'
     params = {
         'query': query,
         'type': 'restaurant',
-        'key': settings.GOOGLE_PLACES_API_KEY
+        'key': settings.GOOGLE_PLACES_API_KEY,
+        'radius': radius_km * 50000
     }
+
     response = requests.get(url, params=params)
     data = response.json()
 
@@ -39,23 +45,25 @@ def restaurants_view(request):
                 latitude = result['geometry']['location']['lat']
                 longitude = result['geometry']['location']['lng']
 
-                # Get driving distance between user and restaurant (backend call)
                 if user_latitude and user_longitude:
                     distance = get_driving_distance(user_latitude, user_longitude, latitude, longitude)
+                    parsed_distance = parse_distance(distance)
                 else:
-                    distance = 'N/A'
+                    distance = 'Loading...'
+                    parsed_distance = 9999
 
-                restaurant = {
-                    'image_url': image_url,
-                    'name': result.get('name', 'Unknown'),
-                    'rating': rating,
-                    'reviews': result.get('user_ratings_total', 'N/A'),
-                    'place_id': result.get('place_id', ''),
-                    'latitude': latitude,
-                    'longitude': longitude,
-                    'distance': distance  # Add distance to restaurant data
-                }
-                restaurants.append(restaurant)
+                if parsed_distance <= float(max_distance) or float(max_distance) == 9999:
+                    restaurant = {
+                        'image_url': image_url,
+                        'name': result.get('name', 'Unknown'),
+                        'rating': rating,
+                        'reviews': result.get('user_ratings_total', 'N/A'),
+                        'place_id': result.get('place_id', ''),
+                        'latitude': latitude,
+                        'longitude': longitude,
+                        'distance': distance
+                    }
+                    restaurants.append(restaurant)
 
     return render(request, 'main/restaurants.html', {'restaurants': restaurants, 'query': query, 'selected_rating': min_rating})
 
@@ -76,3 +84,11 @@ def get_driving_distance(origin_lat, origin_lng, dest_lat, dest_lng):
         if distance_element['status'] == 'OK':
             return distance_element['distance']['text']
     return 'N/A'
+
+def parse_distance(distance):
+    if 'mi' in distance:
+        return float(distance.split()[0])
+    elif 'ft' in distance:
+        return float(distance.split()[0]) / 5280
+    else:
+        return 9999

@@ -3,11 +3,10 @@
         required>
 </form>
 
-<!-- Add the Google Places API Script -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAB4mZM4o2Oe4_-ZHmH9gTI3o-gj00pEg4&libraries=places"></script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAB4mZM4o2Oe4_-ZHmH9gTI3o-gj00pEg4&libraries=places"></script>
 
 <script>
-    // Initialize Google Places Autocomplete
     function initAutocomplete() {
         const input = document.getElementById('autocomplete');
         const autocomplete = new google.maps.places.Autocomplete(input, {
@@ -23,16 +22,14 @@
                 // Set the bounds to a certain radius around the user's location
                 const circle = new google.maps.Circle({
                     center: userLocation,
-                    radius: 5000 // 5 km radius; adjust as needed
+                    radius: 10000 * 1.60934 // 10 mile radius; adjust as needed
                 });
 
                 autocomplete.setBounds(circle.getBounds());
             }, () => {
-                // Handle error if user denies location access
                 console.error("Geolocation permission denied.");
             });
         } else {
-            // Browser doesn't support Geolocation
             console.error("Geolocation is not supported by this browser.");
         }
 
@@ -42,25 +39,21 @@
         });
     }
 
-    // Handle form submission
     document.getElementById('searchForm').addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent form submission
+        event.preventDefault();
 
-        const query = document.getElementById('autocomplete').value; // Get the search query
+        const query = document.getElementById('autocomplete').value;
         if (query) {
-            // Redirect to restaurants.html with query as a parameter
-            window.location.href = `restaurants.html?query=${encodeURIComponent(query)}`;
+            window.location.href = `/restaurants/?query=${encodeURIComponent(query)}`;
         }
     });
 
-    // Initialize autocomplete when the page loads
     window.onload = function () {
         initAutocomplete();
     };
 </script>
 
 <style>
-    /* Styling the search bar */
     form {
         display: flex;
         justify-content: center;
