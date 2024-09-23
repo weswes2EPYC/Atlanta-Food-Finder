@@ -12,15 +12,12 @@ h2 {
 .filter-wrapper {
     display: flex;
     justify-content: center;
-    /* Center the filter group */
     align-items: center;
     width: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
     gap: 30px;
-    /* Provide space between items */
     flex-wrap: wrap;
-    /* Allow wrapping if items can't fit in one row */
 }
 
 .filter-item {
