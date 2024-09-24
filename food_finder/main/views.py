@@ -103,7 +103,6 @@ def parse_distance(distance):
 
 def restaurantDetailsPage(request, restaurant_id):
     try:
-        restaurant_id = "ChIJgUolJWwE9YgRnxg5IduXOsg"
         gmaps = googlemaps.Client(key=API_KEY)
         res = gmaps.place(restaurant_id)["result"]
         if "restaurant" not in res["types"]:

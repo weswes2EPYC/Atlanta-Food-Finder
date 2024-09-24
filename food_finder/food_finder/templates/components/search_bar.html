@@ -33,6 +33,7 @@
             console.error("Geolocation is not supported by this browser.");
         }
 
+        // Add listener for place selection
         autocomplete.addListener('place_changed', function () {
             const place = autocomplete.getPlace();
             console.log(place);
@@ -49,7 +50,7 @@
     });
 
     window.onload = function () {
-        initAutocomplete();
+        getUserLocation();  // Get user's location and initialize autocomplete
     };
 </script>
 
@@ -70,6 +71,7 @@
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
         outline: none;
         transition: box-shadow 0.3s ease-in-out;
+        background-color: #E9E9E9;
     }
 
     #autocomplete:focus {
