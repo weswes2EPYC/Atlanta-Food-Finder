@@ -1,7 +1,7 @@
 {% if request.user.is_authenticated %}
-<div class="wrapper">
+<div class="wrapper" id="navbar">
     <nav>
-        <div class="logo">foodr.</div>
+        <a class="logo" href="/">foodr.</a>
         <ul class="nav-links">
             <li><a class="active" href="{% url 'signin' %}">Map</a></li>
 
@@ -13,9 +13,9 @@
     </nav>
 </div>
 {% else %}
-<div class="wrapper">
+<div class="wrapper" id="navbar">
     <nav>
-        <div class="logo">foodr.</div>
+        <a class="logo" href="/">foodr.</a>
         <ul class="nav-links">
 
             <li><a class="active" href="{% url 'signin' %}">Map</a></li>
@@ -52,7 +52,7 @@
 
 .button {
     padding: 10px 30px;
-    border-radius: 15px;
+    border-radius: .5rem;
     color: white;
     display: inline-block;
     font-weight: 500;
@@ -74,6 +74,7 @@ nav .logo {
     font-size: 36px;
     font-weight: 700;
     margin-right: 50px;
+    text-decoration: none;
 }
 
 nav ul {

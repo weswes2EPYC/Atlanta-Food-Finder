@@ -6,9 +6,14 @@
 {% endblock %}
 
 {% block content %}
-    <div>
-        {% csrf_token %}
-        <h1>Atlanta Food Finder</h1>
-        <p>Here</p>
-    </div>
+    {% include 'components/navbar-transparent.html' %}
+    <header>
+        <div>
+            <!-- Desktop Nav Menu^ -->
+            <div class="search-section">
+                <h1>Find your next <span class = "highlight">delicious</span> meal!</h1>
+                {% include 'components/search_bar.html' %}
+            </div>
+        </div>
+    </header>
 {% endblock %}

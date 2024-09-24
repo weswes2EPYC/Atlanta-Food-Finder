@@ -1,29 +1,37 @@
 <form id="searchForm">
-    <!-- The input for the search query with autocomplete -->
     <input type="search" id="autocomplete" name="query" placeholder="i.e. South City Kitchen Midtown, Chinese, Buckhead"
         required>
 </form>
 
-<!-- Add the Google Places API Script -->
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAB4mZM4o2Oe4_-ZHmH9gTI3o-gj00pEg4&libraries=places"></script>
 
 <script>
-    // Function to initialize Google Places Autocomplete with location bounds
-    function initAutocomplete(position) {
+    function initAutocomplete() {
         const input = document.getElementById('autocomplete');
-
-        // Create a bounds object centered around the user's location
-        const userLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-        const options = {
-            bounds: new google.maps.LatLngBounds(userLocation),  // Bound results around the user
+        const autocomplete = new google.maps.places.Autocomplete(input, {
             types: ['restaurant'],
             componentRestrictions: { country: 'us' }
-        };
+        });
 
-        // Initialize autocomplete with the options
-        const autocomplete = new google.maps.places.Autocomplete(input, options);
+        // Use the Geolocation API to get the user's current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const userLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+                // Set the bounds to a certain radius around the user's location
+                const circle = new google.maps.Circle({
+                    center: userLocation,
+                    radius: 10000 * 1.60934 // 10 mile radius; adjust as needed
+                });
+
+                autocomplete.setBounds(circle.getBounds());
+            }, () => {
+                console.error("Geolocation permission denied.");
+            });
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
 
         // Add listener for place selection
         autocomplete.addListener('place_changed', function () {
@@ -32,41 +40,21 @@
         });
     }
 
-    // Function to get user's current location
-    function getUserLocation() {
-        // Check if browser supports Geolocation API
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(initAutocomplete, handleLocationError);
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    }
-
-    // Handle location errors (e.g., user denies location access)
-    function handleLocationError(error) {
-        console.error("Error retrieving location: ", error.message);
-        alert("Could not retrieve your location. Please enable location services or enter manually.");
-    }
-
-    // Handle form submission
     document.getElementById('searchForm').addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent form submission
+        event.preventDefault();
 
-        const query = document.getElementById('autocomplete').value; // Get the search query
+        const query = document.getElementById('autocomplete').value;
         if (query) {
-            // Redirect to restaurants.html with query as a parameter
-            window.location.href = `restaurants.html?query=${encodeURIComponent(query)}`;
+            window.location.href = `/restaurants/?query=${encodeURIComponent(query)}`;
         }
     });
 
-    // Initialize getting user's location when the page loads
     window.onload = function () {
         getUserLocation();  // Get user's location and initialize autocomplete
     };
 </script>
 
 <style>
-    /* Styling the search bar */
     form {
         display: flex;
         justify-content: center;
