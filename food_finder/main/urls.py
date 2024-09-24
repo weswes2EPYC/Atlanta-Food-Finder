@@ -1,7 +1,6 @@
 from django.urls import path
 from .views import returnHomePage, restaurantDetailsPage, saveRestaurant
-import views
-
+from . import views
 urlpatterns = [
     path('', returnHomePage, name='home'),
     path('restaurants/', views.restaurants_view, name='restaurants'),
