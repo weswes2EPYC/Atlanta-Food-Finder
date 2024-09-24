@@ -1,5 +1,5 @@
 {% if request.user.is_authenticated %}
-<div class="wrapper">
+<div class="wrapper" id="navbar">
     <nav>
         <a class="logo" href="/">foodr.</a>
         <ul class="nav-links">
@@ -13,7 +13,7 @@
     </nav>
 </div>
 {% else %}
-<div class="wrapper">
+<div class="wrapper" id="navbar">
     <nav>
         <a class="logo" href="/">foodr.</a>
         <ul class="nav-links">
