@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block staticfiles %}
+<link rel="stylesheet" href="{% static 'restaurants.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<body>
+    {% include 'components/navbar.html' %}
+    <h1>Restaurants</h1>
+    {% include 'components/search_bar.html' %}
+
+    <div class="filter-wrapper">
+        <div class="filter-item">
+            <label for="rating-filter">Ratings:</label>
+            <select id="rating-filter" onchange="filterRestaurants()">
+                <option value="0">0+</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+        
+        <div class="filter-item">
+            <label for="distance-filter">Distance Range:</label>
+            <select id="distance-filter" onchange="filterRestaurants()">
+                <option value="9999">All</option>
+                <option value="1">
+                    1 mile</option>
+                <option value="5">
+                    5 miles</option>
+                <option value="10">
+                    10 miles</option>
+                <option value="25">
+                    25 miles</option>
+                <option value="50">
+                    50 miles</option>
+            </select>
+        </div>
+        
+    </div>
+
+    <div class="content-wrapper">
+        <div class="restaurant-list-wrapper">
+            <h2>'{{ query }}'</h2>
+            <div class="restaurant-list" id="restaurant-list">
+                {% for restaurant in restaurants %}
+                <div class="restaurant-card-wrapper" data-rating="{{ restaurant.rating }}" data-latitude="{{ restaurant.latitude }}" data-distance="{{ restaurant.distance }}"
+                    data-longitude="{{ restaurant.longitude }}">
+                    {% include 'components/restaurant_card.html' with restaurant_name=restaurant.name restaurant_image_url=restaurant.image_url restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews restaurant_distance=restaurant.distance%}
+                </div>
+                {% endfor %}
+            </div>
+            {% if not restaurants %}
+            <p>No restaurants found for "{{ query }}".</p>
+            {% endif %}
+        </div>
+    
+        <div class="map-container">
+            <!-- Map will be displayed here -->
+        </div>
+    </div>
+</body>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('query') || 'some-query';
+    const userLatitude = urlParams.get('user_latitude');
+    const userLongitude = urlParams.get('user_longitude');
+
+    let locationFetched = localStorage.getItem('locationFetched') === 'true';
+
+    window.onload = function () {
+        if (!userLatitude || !userLongitude) {
+            getUserLocation();
+        } else {
+            displayContent();
+        }
+    };
+
+    function filterRestaurants() {
+        const ratingFilter = document.getElementById('rating-filter').value;
+        const distanceFilter = document.getElementById('distance-filter').value;
+        const restaurantCards = document.querySelectorAll('.restaurant-card-wrapper');
+        
+        restaurantCards.forEach(card => {
+            const rating = card.getAttribute('data-rating');
+            const distance = card.getAttribute('data-distance');
+
+            if (rating >= ratingFilter && distance <= distanceFilter) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const userLatitude = position.coords.latitude;
+                const userLongitude = position.coords.longitude;
+
+                // Store the flag in localStorage
+                localStorage.setItem('locationFetched', 'true');
+
+                // Redirect to the restaurants page with user's location and original query
+                window.location.href = `/restaurants/?query=${encodeURIComponent(query)}&user_latitude=${userLatitude}&user_longitude=${userLongitude}`;
+            }, function (error) {
+                console.error("Geolocation error: " + error.message);
+                // Mark as fetched even if there's an error
+                localStorage.setItem('locationFetched', 'true');
+            });
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+            // Still mark as fetched even if unsupported
+            localStorage.setItem('locationFetched', 'true');
+        }
+    }
+
+    function displayContent() {
+        console.log("Displaying content for query:", query);
+    }
+</script>
+
+
+{% endblock %}
