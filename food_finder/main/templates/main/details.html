@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block staticfiles %}
+    <script src="https://cdn.tailwindcss.com"></script>
+{% endblock %}
+
+{% block content %}
+<div class="w-full flex flex-col px-6 gap-6 pb-6">
+    <!-- Search Bar -->
+    <div class="flex">
+        {% include 'components/search_bar.html' %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex flex-col gap-6">
+        <!-- Section 1 -->
+        <div class="flex items-center gap-24">
+            <img src="{{image_url}}" alt="Image of {{name}}" class="rounded-md w-full max-w-[45%] aspect-4/3 object-cover">
+            <div class="flex flex-col w-full max-w-[45%] gap-4">
+                <div class="flex font-bold items-center gap-4">
+                    <button>
+                        <i class="fa-regular fa-bookmark text-med-gray text-4xl"></i>
+                    </button>
+                    
+                    <!-- <i class="fa-solid fa-bookmark"></i> -->
+                    <h1 class="text-5xl">{{name}}</h1>
+                </div>
+                <p>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <span class="font-medium text-lg">{{rating}} ({{num_reviews}} reviews)</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="flex items-center gap-24">
+            <!-- <img src="https://cdn.wccftech.com/wp-content/uploads/2022/05/Google-Maps-2.jpg" alt="Map" class="rounded-md w-full max-w-[45%] aspect-4/3 object-cover"> -->
+            <iframe src="{{ map }}" title="{{ name }}" class="rounded-md w-full max-w-[45%] aspect-4/3 object-cover"></iframe>
+            <div class="flex flex-col w-full max-w-[45%] gap-4 text-lg">
+                <p><span class="font-semibold">Address:</span> {{address}}</p>
+                <p><span class="font-semibold">Phone:</span> {{phone}}</p>
+            </div>
+        </div>
+
+        <!-- Reviews -->
+        <div>
+            <h2 class="text-3xl font-bold">Reviews</h2>
+            <!-- Reviews Container -->
+            <div class="flex flex-col gap-6 mt-6">
+                {% for review in reviews %}
+                <div class="w-full rounded-md shadow-center p-4 flex flex-col gap-1">
+                    <h3 class="text-xl font-semibold">{{review.author_name}}</h3>
+                    <p>
+                        <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                        <span class="font-medium">{{review.rating}}</span>
+                    </p>
+                    <p>{{review.text}}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
