@@ -94,6 +94,7 @@ def get_driving_distance(origin_lat, origin_lng, dest_lat, dest_lng):
     return 'N/A'
 
 def parse_distance(distance):
+    distance = distance.replace(',', '')
     if 'mi' in distance:
         return float(distance.split()[0])
     elif 'ft' in distance:
