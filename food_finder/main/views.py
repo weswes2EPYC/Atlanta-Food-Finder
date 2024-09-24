@@ -6,7 +6,7 @@ import http
 import json
 
 # this is temporary, change this to .env later
-API_KEY = ""
+API_KEY = "AIzaSyAB4mZM4o2Oe4_-ZHmH9gTI3o-gj00pEg4"
 
 # Create your views here.
 def returnHomePage(request):
