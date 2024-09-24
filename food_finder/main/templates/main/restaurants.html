@@ -51,7 +51,7 @@
                 {% for restaurant in restaurants %}
                 <div class="restaurant-card-wrapper" data-rating="{{ restaurant.rating }}" data-latitude="{{ restaurant.latitude }}" data-distance="{{ restaurant.distance }}"
                     data-longitude="{{ restaurant.longitude }}">
-                    {% include 'components/restaurant_card.html' with restaurant_name=restaurant.name restaurant_image_url=restaurant.image_url restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews restaurant_distance=restaurant.distance%}
+                    {% include 'components/restaurant_card.html' with restaurant_id=restaurant.place_id restaurant_name=restaurant.name restaurant_image_url=restaurant.image_url restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews restaurant_distance=restaurant.distance%}
                 </div>
                 {% endfor %}
             </div>
