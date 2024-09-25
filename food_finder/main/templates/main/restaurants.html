@@ -24,32 +24,40 @@
                 <option value="5">5</option>
             </select>
         </div>
-        
+
         <div class="filter-item">
             <label for="distance-filter">Distance Range:</label>
             <select id="distance-filter" onchange="filterRestaurants()">
                 <option value="9999">All</option>
-                <option value="1">
-                    1 mile</option>
-                <option value="5">
-                    5 miles</option>
-                <option value="10">
-                    10 miles</option>
-                <option value="25">
-                    25 miles</option>
-                <option value="50">
-                    50 miles</option>
+                <option value="1">1 mile</option>
+                <option value="5">5 miles</option>
+                <option value="10">10 miles</option>
+                <option value="25">25 miles</option>
+                <option value="50">50 miles</option>
             </select>
         </div>
-        
+
+        <div class="filter-item">
+            <label for="sort-filter">Sort By:</label>
+            <select id="sort-filter" onchange="sortRestaurants()">
+                <option value="none">None</option>
+                <option value="rating-asc">Rating &#9650;</option>
+                <option value="rating-desc">Rating &#9660;</option>
+                <option value="distance-asc">Distance &#9650;</option>
+                <option value="distance-desc">Distance &#9660;</option>
+            </select>
+        </div>
+
+
     </div>
+
 
     <div class="content-wrapper">
         <div class="restaurant-list-wrapper">
             <h2>'{{ query }}'</h2>
             <div class="restaurant-list" id="restaurant-list">
                 {% for restaurant in restaurants %}
-                <div class="restaurant-card-wrapper" data-rating="{{ restaurant.rating }}" data-latitude="{{ restaurant.latitude }}" data-distance="{{ restaurant.distance }}"
+                <div class="restaurant-card-wrapper" data-image="{{ restaurant.image_url }}" data-rating="{{ restaurant.rating }}" data-latitude="{{ restaurant.latitude }}" data-longitude="{{ restaurant.longitude }}" data-distance="{{ restaurant.distance }}" data-placeID="{{ restaurant.place_id }}" data-name="{{ restaurant.name }}"
                     data-longitude="{{ restaurant.longitude }}">
                     {% include 'components/restaurant_card.html' with restaurant_id=restaurant.place_id restaurant_name=restaurant.name restaurant_image_url=restaurant.image_url restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews restaurant_distance=restaurant.distance%}
                 </div>
@@ -60,45 +68,91 @@
             {% endif %}
         </div>
     
-        <div class="map-container">
-            <!-- Map will be displayed here -->
+        <div class="map-container" id="map" style="height: 100%;">
+
         </div>
     </div>
 </body>
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const query = urlParams.get('query') || 'some-query';
+    const query = urlParams.get('query') || 'restaurants';
     const userLatitude = urlParams.get('user_latitude');
     const userLongitude = urlParams.get('user_longitude');
 
     let locationFetched = localStorage.getItem('locationFetched') === 'true';
 
     window.onload = function () {
-        initAutocomplete();
         if (!userLatitude || !userLongitude) {
             getUserLocation();
         } else {
             displayContent();
         }
+        initAutocomplete();
+        initMap();
     };
 
-    function filterRestaurants() {
-        const ratingFilter = document.getElementById('rating-filter').value;
-        const distanceFilter = document.getElementById('distance-filter').value;
-        const restaurantCards = document.querySelectorAll('.restaurant-card-wrapper');
-        
-        restaurantCards.forEach(card => {
-            const rating = card.getAttribute('data-rating');
-            const distance = card.getAttribute('data-distance');
+    function sortRestaurants() {
+        const sortFilter = document.getElementById('sort-filter').value;
+        const restaurantCards = Array.from(document.querySelectorAll('.restaurant-card-wrapper'));
 
-            if (rating >= ratingFilter && distance <= distanceFilter) {
-                card.style.display = 'block';
+        // Check if "None" is selected
+        if (sortFilter === 'none') {
+            restaurantCards.forEach(card => {
+                card.style.display = 'block'; // Ensure all are visible
+            });
+            const restaurantList = document.getElementById('restaurant-list');
+            restaurantList.innerHTML = ''; // Clear existing cards
+            restaurantCards.forEach(card => restaurantList.appendChild(card)); // Append original cards
+            return; // Exit the function
+        }
+
+        restaurantCards.sort((a, b) => {
+            const aRating = parseFloat(a.getAttribute('data-rating'));
+            const bRating = parseFloat(b.getAttribute('data-rating'));
+            const aDistance = parseFloat(a.getAttribute('data-distance').replace(' mi', ''));
+            const bDistance = parseFloat(b.getAttribute('data-distance').replace(' mi', ''));
+
+            if (sortFilter.startsWith('rating')) {
+                return sortFilter.endsWith('asc') ? aRating - bRating : bRating - aRating;
             } else {
-                card.style.display = 'none';
+                return sortFilter.endsWith('asc') ? aDistance - bDistance : bDistance - aDistance;
+            }
+        });
+
+        const restaurantList = document.getElementById('restaurant-list');
+        restaurantList.innerHTML = ''; // Clear existing cards
+        restaurantCards.forEach(card => restaurantList.appendChild(card)); // Append sorted cards
+    }
+
+    function filterRestaurants() {
+        const ratingFilter = parseFloat(document.getElementById('rating-filter').value);
+        const distanceFilter = parseFloat(document.getElementById('distance-filter').value);
+        const restaurantCards = document.querySelectorAll('.restaurant-card-wrapper');
+
+        // Loop through each restaurant card
+        restaurantCards.forEach(card => {
+            const rating = parseFloat(card.getAttribute('data-rating'));
+            const distanceString = card.getAttribute('data-distance');
+            const distance = parseFloat(distanceString.replace(' mi', ''));
+
+            // Determine if the card should be displayed
+            const shouldDisplay = rating >= ratingFilter && distance <= distanceFilter;
+
+            // Show or hide the restaurant card
+            card.style.display = shouldDisplay ? 'block' : 'none';
+
+            // Get the corresponding marker using the restaurant's place ID
+            const restaurantID = card.getAttribute('data-placeID');
+            const marker = markers[restaurantID]; // Assuming 'markers' is your object storing all markers
+
+            // Show or hide the marker
+            if (marker) {
+                marker.marker.setMap(shouldDisplay ? map : null); // Show or hide marker based on card visibility
             }
         });
     }
+
 
     function getUserLocation() {
         if (navigator.geolocation) {
@@ -106,25 +160,151 @@
                 const userLatitude = position.coords.latitude;
                 const userLongitude = position.coords.longitude;
 
-                // Store the flag in localStorage
                 localStorage.setItem('locationFetched', 'true');
 
                 // Redirect to the restaurants page with user's location and original query
                 window.location.href = `/restaurants/?query=${encodeURIComponent(query)}&user_latitude=${userLatitude}&user_longitude=${userLongitude}`;
             }, function (error) {
                 console.error("Geolocation error: " + error.message);
-                // Mark as fetched even if there's an error
                 localStorage.setItem('locationFetched', 'true');
             });
         } else {
             console.error("Geolocation is not supported by this browser.");
-            // Still mark as fetched even if unsupported
             localStorage.setItem('locationFetched', 'true');
         }
     }
 
     function displayContent() {
         console.log("Displaying content for query:", query);
+    }
+            
+    let map;
+    let markers = {}; // Store markers by restaurant placeID
+
+    function initMap() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                // Create the map centered on the user's location
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: userLocation,
+                    zoom: 12
+                });
+
+                // Add a marker for the user's location
+                const userMarker = new google.maps.Marker({
+                    position: userLocation,
+                    map: map,
+                    icon: {
+                        url: '/static/main/images/you_are_here_icon.png',
+                        scaledSize: new google.maps.Size(60, 60)
+                    },
+                    title: 'You are here!'
+                });
+
+                const userInfoWindow = new google.maps.InfoWindow({
+                    content: `<div style="color: black; font-weight: bold;">You Are Here!</div>`
+                });
+
+                userMarker.addListener('mouseover', () => {
+                    userInfoWindow.close();
+                    userInfoWindow.open(map, userMarker);
+                });
+
+                userMarker.addListener('mouseout', () => {
+                    userInfoWindow.close();
+                });
+
+                // Adds markers for restaurants
+                const restaurantCards = document.querySelectorAll('.restaurant-card-wrapper');
+
+                restaurantCards.forEach(card => {
+                    const latitude = parseFloat(card.getAttribute('data-latitude'));
+                    const longitude = parseFloat(card.getAttribute('data-longitude'));
+                    const restaurantName = card.getAttribute('data-name');
+                    const restaurantImage = card.getAttribute('data-image');
+                    const restaurantID = card.getAttribute('data-placeID');
+                    const restaurantRating = card.getAttribute('data-rating');
+
+                    if (!isNaN(latitude) && !isNaN(longitude)) {
+                        const marker = new google.maps.Marker({
+                            position: { lat: latitude, lng: longitude },
+                            map: map,
+                            title: restaurantName
+                        });
+
+                        const infoWindow = new google.maps.InfoWindow({
+                            content: `
+                                <div style="color: black; font-weight: bold; max-width: 200px; max-height: 500px; text-align: center;">
+                                    <p style="margin-bottom: 3px;">${restaurantName}</p>
+                                    <div style="display: flex; justify-content: center; align-items: center;">
+                                        <span style="color: gold; font-size: 18px; margin-right: 5px; line-height: 1.2; vertical-align: middle; transform: translateY(-1px);">&#9733;</span>
+                                        <span style="font-size: 14px; line-height: 1.2;">${restaurantRating}</span>
+                                    </div>
+                                    <img src="${restaurantImage}" alt="${restaurantName}" style="max-height: 300px; max-width: 100%; height: auto; width: auto; object-fit: cover; margin-bottom: 10px;">
+                                </div>
+                            `
+                        });
+
+
+
+                        // Store marker and infoWindow in the markers dictionary
+                        markers[restaurantID] = { marker, infoWindow };
+
+                        marker.addListener('mouseover', () => {
+                            infoWindow.close();
+                            infoWindow.open(map, marker);
+                        });
+
+                        marker.addListener('mouseout', () => {
+                            infoWindow.close();
+                        });
+
+                        marker.addListener('click', () => {
+                            window.location.href = `/restaurant/${restaurantID}`;
+                        });
+                    } else {
+                        console.warn(`Invalid coordinates for restaurant: ${restaurantName}`);
+                    }
+                });
+
+                // Add hover event to restaurant cards to open corresponding marker's infoWindow
+                restaurantCards.forEach(card => {
+                    const restaurantID = card.getAttribute('data-placeID');
+
+                    card.addEventListener('mouseenter', () => {
+                        const { marker, infoWindow } = markers[restaurantID];
+                        infoWindow.open(map, marker);
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        const { infoWindow } = markers[restaurantID];
+                        infoWindow.close();
+                    });
+                });
+            }, () => {
+                // Handle error if location is not available
+                handleLocationError(true, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, map.getCenter());
+        }
+    }
+
+    function handleLocationError(browserHasGeolocation, pos) {
+        alert(browserHasGeolocation ?
+            'Error: The Geolocation service failed.' :
+            'Error: Your browser doesn\'t support geolocation.');
+        // Optionally, set map to a default location (GT, Atlanta)
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 33.7756, lng: -84.3963 },
+            zoom: 12
+        });
     }
 </script>
 
