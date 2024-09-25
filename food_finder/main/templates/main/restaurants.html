@@ -24,25 +24,33 @@
                 <option value="5">5</option>
             </select>
         </div>
-        
+
         <div class="filter-item">
             <label for="distance-filter">Distance Range:</label>
             <select id="distance-filter" onchange="filterRestaurants()">
                 <option value="9999">All</option>
-                <option value="1">
-                    1 mile</option>
-                <option value="5">
-                    5 miles</option>
-                <option value="10">
-                    10 miles</option>
-                <option value="25">
-                    25 miles</option>
-                <option value="50">
-                    50 miles</option>
+                <option value="1">1 mile</option>
+                <option value="5">5 miles</option>
+                <option value="10">10 miles</option>
+                <option value="25">25 miles</option>
+                <option value="50">50 miles</option>
             </select>
         </div>
-        
+
+        <div class="filter-item">
+            <label for="sort-filter">Sort By:</label>
+            <select id="sort-filter" onchange="sortRestaurants()">
+                <option value="none">None</option>
+                <option value="rating-asc">Rating &#9650;</option>
+                <option value="rating-desc">Rating &#9660;</option>
+                <option value="distance-asc">Distance &#9650;</option>
+                <option value="distance-desc">Distance &#9660;</option>
+            </select>
+        </div>
+
+
     </div>
+
 
     <div class="content-wrapper">
         <div class="restaurant-list-wrapper">
@@ -83,6 +91,39 @@
         initAutocomplete();
         initMap();
     };
+
+    function sortRestaurants() {
+        const sortFilter = document.getElementById('sort-filter').value;
+        const restaurantCards = Array.from(document.querySelectorAll('.restaurant-card-wrapper'));
+
+        // Check if "None" is selected
+        if (sortFilter === 'none') {
+            restaurantCards.forEach(card => {
+                card.style.display = 'block'; // Ensure all are visible
+            });
+            const restaurantList = document.getElementById('restaurant-list');
+            restaurantList.innerHTML = ''; // Clear existing cards
+            restaurantCards.forEach(card => restaurantList.appendChild(card)); // Append original cards
+            return; // Exit the function
+        }
+
+        restaurantCards.sort((a, b) => {
+            const aRating = parseFloat(a.getAttribute('data-rating'));
+            const bRating = parseFloat(b.getAttribute('data-rating'));
+            const aDistance = parseFloat(a.getAttribute('data-distance').replace(' mi', ''));
+            const bDistance = parseFloat(b.getAttribute('data-distance').replace(' mi', ''));
+
+            if (sortFilter.startsWith('rating')) {
+                return sortFilter.endsWith('asc') ? aRating - bRating : bRating - aRating;
+            } else {
+                return sortFilter.endsWith('asc') ? aDistance - bDistance : bDistance - aDistance;
+            }
+        });
+
+        const restaurantList = document.getElementById('restaurant-list');
+        restaurantList.innerHTML = ''; // Clear existing cards
+        restaurantCards.forEach(card => restaurantList.appendChild(card)); // Append sorted cards
+    }
 
     function filterRestaurants() {
         const ratingFilter = document.getElementById('rating-filter').value;
