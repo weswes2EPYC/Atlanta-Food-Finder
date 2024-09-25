@@ -2,130 +2,21 @@
 {% load static %}
 
 {% block staticfiles %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?
-        family=Inter:ital,opsz,wght@0,14..32,700;1,14..32,700&
-        family=Outfit:wght@100..900&display=swap" rel="stylesheet"
-    />
-    <link rel="stylesheet" href="{% static 'main/favorites.css' %}">
-    <style>
-        .card h3 {
-            color: #000;
-            font-family: "Inter", sans-serif;
-            font-size: 36px;
-            font-weight: 600;
-            text-align: left;
-        }
-
-        .card p {
-            color: #2F3C4B;
-            font-family: "Inter", sans-serif;
-            font-size: 22px;
-            font-weight: 500;
-            text-align: left;
-        }
-
-        img {
-            width: 100%;
-            border-radius: 10px 10px 10px 10px;
-        }
-
-        .column {
-            float:left;
-            width: 32%;
-            padding: 10px 10px;
-        }
-
-        .row {
-            margin: 0 -5px;
-        }
-
-        .row:after {
-            content: "";
-            display: table;
-            clear:both;
-        }
-
-        @media screen and (max-width: 1000px) {
-            .column {
-                width: 50%;
-                display: block;
-                margin-bottom: 20px;
-            }
-        }
-
-        @media screen and (max-width: 600px) {
-            .column {
-                width: 100%;
-                display: block;
-                margin-bottom: 20px;
-            }
-        }
-
-        .card {
-            padding: 16px;
-            text-align: center;
-            border-radius: 15px;
-            background: #FFF;
-            box-shadow: 0px 0px 10px 4px rgba(0, 0, 0, 0.10);
-            text-align: left;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 {% endblock %}
 
 {% block content %}
-    <div class = "row">
-        <div class = "column">
-            <div class = "card">
-                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
-                <h3>Lucky Buddha</h3>
-                <p>4.2 (201 reviews)</p>
-            </div>
-        </div>
-
-        <div class = "column">
-            <div class = "card">
-                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
-                <h3>Lucky Buddha</h3>
-                <p>4.2 (201 reviews)</p>
-            </div>
-        </div>
-
-        <div class = "column">
-            <div class = "card">
-                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
-                <h3>Lucky Buddha</h3>
-                <p>4.2 (201 reviews)</p>
-            </div>
-        </div>
-    </div>
-    <div class = "row">
-        <div class = "column">
-            <div class = "card">
-                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
-                <h3>Lucky Buddha</h3>
-                <p>4.2 (201 reviews)</p>
-            </div>
-        </div>
-
-        <div class = "column">
-            <div class = "card">
-                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
-                <h3>Lucky Buddha</h3>
-                <p>4.2 (201 reviews)</p>
-            </div>
-        </div>
-
-        <div class = "column">
-            <div class = "card">
-                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/24a357475b811418679f31ebb60230c7/df577d3a0807d3bb859f2fb53aefcd86.jpeg">
-                <h3>Lucky Buddha</h3>
-                <p>4.2 (201 reviews)</p>
-            </div>
+    {% include 'components/navbar-transparent.html' %}
+    <div class="w-full flex flex-col px-6 gap-6 pb-6">
+    
+        <!-- Title -->
+        <h2 class="text-3xl font-bold">My Favorite Restaurants</h2>
+    
+        <!-- Restaurant Cards Grid (4 Columns) -->
+        <div class="grid grid-cols-4 gap-6 mt-6">
+            {% for restaurant in favorites %}
+                {% include 'components/restaurant_card.html' with restaurant_id=restaurant.place_id restaurant_name=restaurant.name restaurant_image_url=restaurant.image_url restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews %}
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
