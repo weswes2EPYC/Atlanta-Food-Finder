@@ -75,6 +75,7 @@
     let locationFetched = localStorage.getItem('locationFetched') === 'true';
 
     window.onload = function () {
+        initAutocomplete();
         if (!userLatitude || !userLongitude) {
             getUserLocation();
         } else {
