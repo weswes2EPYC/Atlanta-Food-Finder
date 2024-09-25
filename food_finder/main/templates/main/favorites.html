@@ -8,11 +8,10 @@
 {% block content %}
     {% include 'components/navbar-transparent.html' %}
     <div class="w-full flex flex-col px-6 gap-6 pb-6">
+
+        <h2 class="text-5xl text-center mt-5">Saved Restaurants</h2>
     
-        <!-- Title -->
-        <h2 class="text-3xl font-bold">My Favorite Restaurants</h2>
-    
-        <!-- Restaurant Cards Grid (4 Columns) -->
+        <!-- Restaurant Cards Grid -->
         <div class="grid grid-cols-4 gap-6 mt-6">
             {% for restaurant in favorites %}
                 {% include 'components/restaurant_card.html' with restaurant_id=restaurant.place_id restaurant_name=restaurant.name restaurant_image_url=restaurant.image_url restaurant_rating=restaurant.rating restaurant_reviews=restaurant.reviews %}
