@@ -153,3 +153,26 @@ def saveRestaurant(request, restaurant_id):
                 "success": True,
                 "is_saved": True
             }), status=200) 
+        
+def favoritesPage(request):
+    if not request.user.is_authenticated:
+        return redirect("/")
+        
+    restaurants = get_saved_restaurants(username=request.user.username).all()
+    url = "https://maps.googleapis.com/maps/api/place/details/json"
+    restaurant_data = []
+    for restaurant in restaurants:
+        restaurant_id = restaurant.restaurant_id
+        gmaps = googlemaps.Client(key=API_KEY)
+        res = gmaps.place(restaurant_id)["result"]
+        try:
+            photo = res["photos"][0]["photo_reference"]
+        except:
+            photo = "https://icons.veryicon.com/png/o/business/new-vision-2/picture-loading-failed-1.png"
+        restaurant_data.append({
+            "name": res["name"],
+            "image_url": f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&photoreference={photo}&key={API_KEY}",
+            "rating": res["rating"],
+            "num_reviews": res['user_ratings_total'],
+        })
+    return HttpResponse(json.dumps(restaurant_data), status=200)
