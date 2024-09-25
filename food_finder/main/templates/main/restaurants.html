@@ -114,12 +114,10 @@
                 window.location.href = `/restaurants/?query=${encodeURIComponent(query)}&user_latitude=${userLatitude}&user_longitude=${userLongitude}`;
             }, function (error) {
                 console.error("Geolocation error: " + error.message);
-                // Mark as fetched even if there's an error
                 localStorage.setItem('locationFetched', 'true');
             });
         } else {
             console.error("Geolocation is not supported by this browser.");
-            // Still mark as fetched even if unsupported
             localStorage.setItem('locationFetched', 'true');
         }
     }
@@ -129,6 +127,8 @@
     }
             
     let map;
+    let markers = {}; // Store markers by restaurant placeID
+
     function initMap() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
@@ -140,7 +140,7 @@
                 // Create the map centered on the user's location
                 map = new google.maps.Map(document.getElementById('map'), {
                     center: userLocation,
-                    zoom: 10
+                    zoom: 12
                 });
 
                 // Add a marker for the user's location
@@ -174,7 +174,9 @@
                     const latitude = parseFloat(card.getAttribute('data-latitude'));
                     const longitude = parseFloat(card.getAttribute('data-longitude'));
                     const restaurantName = card.getAttribute('data-name');
-                    const restaurantImage = card.getAttribute('data-image')
+                    const restaurantImage = card.getAttribute('data-image');
+                    const restaurantID = card.getAttribute('data-placeID');
+                    const restaurantRating = card.getAttribute('data-rating');
 
                     if (!isNaN(latitude) && !isNaN(longitude)) {
                         const marker = new google.maps.Marker({
@@ -185,12 +187,21 @@
 
                         const infoWindow = new google.maps.InfoWindow({
                             content: `
-                            <div style="color: black; font-weight: bold; max-width: 200px; max-height: 500px; text-align: center;">
-                                <p>${restaurantName}</p>
-                                <img src="${restaurantImage}" alt="${restaurantName}" style="max-height: 300px; max-width: 100%; height: auto; width: auto; object-fit: cover; margin-bottom: 10px;">
-                            </div>
-                        `
+                                <div style="color: black; font-weight: bold; max-width: 200px; max-height: 500px; text-align: center;">
+                                    <p style="margin-bottom: 3px;">${restaurantName}</p>
+                                    <div style="display: flex; justify-content: center; align-items: center;">
+                                        <span style="color: gold; font-size: 18px; margin-right: 5px; line-height: 1.2; vertical-align: middle; transform: translateY(-1px);">&#9733;</span>
+                                        <span style="font-size: 14px; line-height: 1.2;">${restaurantRating}</span>
+                                    </div>
+                                    <img src="${restaurantImage}" alt="${restaurantName}" style="max-height: 300px; max-width: 100%; height: auto; width: auto; object-fit: cover; margin-bottom: 10px;">
+                                </div>
+                            `
                         });
+
+
+
+                        // Store marker and infoWindow in the markers dictionary
+                        markers[restaurantID] = { marker, infoWindow };
 
                         marker.addListener('mouseover', () => {
                             infoWindow.close();
@@ -200,9 +211,28 @@
                         marker.addListener('mouseout', () => {
                             infoWindow.close();
                         });
+
+                        marker.addListener('click', () => {
+                            window.location.href = `/restaurant/${restaurantID}`;
+                        });
                     } else {
                         console.warn(`Invalid coordinates for restaurant: ${restaurantName}`);
                     }
+                });
+
+                // Add hover event to restaurant cards to open corresponding marker's infoWindow
+                restaurantCards.forEach(card => {
+                    const restaurantID = card.getAttribute('data-placeID');
+
+                    card.addEventListener('mouseenter', () => {
+                        const { marker, infoWindow } = markers[restaurantID];
+                        infoWindow.open(map, marker);
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        const { infoWindow } = markers[restaurantID];
+                        infoWindow.close();
+                    });
                 });
             }, () => {
                 // Handle error if location is not available
@@ -214,15 +244,15 @@
         }
     }
 
-
     function handleLocationError(browserHasGeolocation, pos) {
         alert(browserHasGeolocation ?
             'Error: The Geolocation service failed.' :
             'Error: Your browser doesn\'t support geolocation.');
-    // Optionally, set map to a default location (GT, Atlanta)
-    map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 33.7756, lng: -84.3963 }, zoom: 10
-    });
+        // Optionally, set map to a default location (GT, Atlanta)
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 33.7756, lng: -84.3963 },
+            zoom: 12
+        });
     }
 </script>
 
