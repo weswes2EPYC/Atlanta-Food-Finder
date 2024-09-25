@@ -126,22 +126,33 @@
     }
 
     function filterRestaurants() {
-        const ratingFilter = document.getElementById('rating-filter').value;
-        const distanceFilter = document.getElementById('distance-filter').value;
+        const ratingFilter = parseFloat(document.getElementById('rating-filter').value);
+        const distanceFilter = parseFloat(document.getElementById('distance-filter').value);
         const restaurantCards = document.querySelectorAll('.restaurant-card-wrapper');
-        
+
+        // Loop through each restaurant card
         restaurantCards.forEach(card => {
             const rating = parseFloat(card.getAttribute('data-rating'));
             const distanceString = card.getAttribute('data-distance');
             const distance = parseFloat(distanceString.replace(' mi', ''));
 
-            if (rating >= ratingFilter && distance <= distanceFilter) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
+            // Determine if the card should be displayed
+            const shouldDisplay = rating >= ratingFilter && distance <= distanceFilter;
+
+            // Show or hide the restaurant card
+            card.style.display = shouldDisplay ? 'block' : 'none';
+
+            // Get the corresponding marker using the restaurant's place ID
+            const restaurantID = card.getAttribute('data-placeID');
+            const marker = markers[restaurantID]; // Assuming 'markers' is your object storing all markers
+
+            // Show or hide the marker
+            if (marker) {
+                marker.marker.setMap(shouldDisplay ? map : null); // Show or hide marker based on card visibility
             }
         });
     }
+
 
     function getUserLocation() {
         if (navigator.geolocation) {
