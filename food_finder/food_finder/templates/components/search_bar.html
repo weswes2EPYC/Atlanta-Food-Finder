@@ -8,49 +8,59 @@
 
 <script>
     function initAutocomplete() {
-        const input = document.getElementById('autocomplete');
-        const autocomplete = new google.maps.places.Autocomplete(input, {
-            types: ['restaurant'],
-            componentRestrictions: { country: 'us' }
-        });
-
-        // Use the Geolocation API to get the user's current location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                const userLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-                // Set the bounds to a certain radius around the user's location
-                const circle = new google.maps.Circle({
-                    center: userLocation,
-                    radius: 10000 * 1.60934 // 10 mile radius; adjust as needed
-                });
-
-                autocomplete.setBounds(circle.getBounds());
-            }, () => {
-                console.error("Geolocation permission denied.");
-            });
-        } else {
-            console.error("Geolocation is not supported by this browser.");
-        }
-
-        autocomplete.addListener('place_changed', function () {
-            const place = autocomplete.getPlace();
-            console.log(place);
-        });
-    }
-
-    document.getElementById('searchForm').addEventListener('submit', function (event) {
-        event.preventDefault();
-
-        const query = document.getElementById('autocomplete').value;
-        if (query) {
-            window.location.href = `/restaurants/?query=${encodeURIComponent(query)}`;
-        }
+    const input = document.getElementById('autocomplete');
+    const autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['restaurant'], // Restricting results to restaurants
+        componentRestrictions: { country: 'us' } // Restricting to US
     });
 
-    window.onload = function () {
-        initAutocomplete();
-    };
+    // Use the Geolocation API to get the user's current location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            const userLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+            // Set the bounds to a certain radius around the user's location
+            const circle = new google.maps.Circle({
+                center: userLocation,
+                radius: 10000 * 1.60934 // 10 mile radius; adjust as needed
+            });
+
+            autocomplete.setBounds(circle.getBounds());
+        }, () => {
+            console.error("Geolocation permission denied.");
+        });
+    } else {
+        console.error("Geolocation is not supported by this browser.");
+    }
+
+    // Event listener for when a place is selected from autocomplete suggestions
+    autocomplete.addListener('place_changed', function () {
+        const place = autocomplete.getPlace();
+        
+        // Check if the place has the necessary details
+        if (!place.place_id || !place.name) {
+            console.error("Autocomplete's returned place contains no place_id or name.");
+            return;
+        }
+
+        // Redirect to a restaurant-specific page using the place_id
+        const placeId = place.place_id;
+        window.location.href = `/restaurant/${placeId}`; // Adjust the URL pattern to fit your application
+    });
+}
+
+document.getElementById('searchForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const query = document.getElementById('autocomplete').value;
+    if (query) {
+        window.location.href = `/restaurants/?query=${encodeURIComponent(query)}`;
+    }
+});
+
+window.onload = function () {
+    initAutocomplete();
+};
 </script>
 
 <style>
