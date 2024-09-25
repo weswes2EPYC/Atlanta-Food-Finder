@@ -7,6 +7,6 @@ urlpatterns = [
     path('restaurants.html', views.restaurants_view, name='restaurants'),
     path('restaurant/<str:restaurant_id>/', restaurantDetailsPage, name='details'),
     path('save/<str:restaurant_id>/', saveRestaurant, name='save'),
-    path('saved', favoritesPage, name="favorites")
+    path('saved', favoritesPage, name="saved")
     # ... other url patterns
 ]

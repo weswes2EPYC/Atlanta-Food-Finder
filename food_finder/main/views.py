@@ -175,4 +175,4 @@ def favoritesPage(request):
             "rating": res["rating"],
             "reviews": res['user_ratings_total'],
         })
-    return render(request, 'main/details.html', {"favorites": restaurant_data})
+    return render(request, 'main/favorites.html', {"favorites": restaurant_data})
