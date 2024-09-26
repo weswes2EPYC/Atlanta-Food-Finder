@@ -20,7 +20,7 @@
                 <div class="flex font-bold items-center gap-4">
                     <button id="saved-button">
                         {% if is_saved %}
-                            <i class="fa-solid fa-bookmark text-med-gray text-4xl"></i>
+                            <i class="fa-solid fa-bookmark text-4xl" style="color: #eccb10;"></i>
                         {% else %}
                             <i class="fa-regular fa-bookmark text-med-gray text-4xl"></i>
                         {% endif %}
@@ -74,7 +74,7 @@
         if (res.ok) {
             const data = await res.json();
             if (data.is_saved) {
-                savedButton.innerHTML = `<i class="fa-solid fa-bookmark text-med-gray text-4xl"></i>`;
+                savedButton.innerHTML = `<i class="fa-solid fa-bookmark text-4xl" style="color: #FFD700;"></i>`;
             } else {
                 savedButton.innerHTML = `<i class="fa-regular fa-bookmark text-med-gray text-4xl"></i>`;
             }
