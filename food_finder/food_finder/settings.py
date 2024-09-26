@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!*okrb@g_gi!bd7-=_omkwfseef3895twgjgxzs88jr*+)op#$'
+SECRET_KEY = 'django-insecure-tg^4y_ay%y5s^xe$#98ks^#)ed2j&+!yfo#b)y4^och_4im3ei'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'food_finder_app',
     'users',
+    'food_finder',
+    'main'
 ]
 
 MIDDLEWARE = [
@@ -57,9 +57,7 @@ ROOT_URLCONF = 'food_finder.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            'templates'
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,23 +118,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATICFILES_DIR = [
-    os.path.join(BASE_DIR, 'static')
-]
-
 STATIC_URL = 'static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
-
-GOOGLE_API_KEY = "AIzaSyAB4mZM4o2Oe4_-ZHmH9gTI3o-gj00pEg4"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = "users:sign-in"
-LOGIN_REDIRECT_URL = "users:account"
-LOGOUT_REDIRECT_URL = "users:sign-in"
-
-BASE_COUNTRY = "US"
+GOOGLE_PLACES_API_KEY = 'AIzaSyAB4mZM4o2Oe4_-ZHmH9gTI3o-gj00pEg4'

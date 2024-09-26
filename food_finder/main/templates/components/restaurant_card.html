@@ -1,0 +1,100 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Component</title>
+    <style>
+        /* Ensure anchor is treated as block and remove default link styling */
+        a.restaurant-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            /* Inherit the text color */
+        }
+
+        .restaurant-card {
+            width: 300px;
+            height: 500px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Add a hover effect to enhance interactivity */
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .restaurant-image {
+            width: 300px;
+            height: 300px;
+            background-color: lightgray;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            overflow: hidden;
+        }
+
+        .restaurant-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .restaurant-name {
+            font-size: 25px;
+            margin: 10px;
+            color: black;
+        }
+
+        .restaurant-rating {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .gold-star {
+            font-size: 24px;
+            color: gold;
+            margin-right: 5px;
+        }
+
+        .review-text {
+            font-size: 22px;
+            color: #333;
+        }
+
+        .restaurant-distance {
+            font-size: 20px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="{% url 'details' restaurant_id %}" class="restaurant-card">
+        <div class="restaurant-image">
+            <img src="{{ restaurant_image_url }}" alt="Restaurant Image">
+        </div>
+
+        <div class="restaurant-name">
+            {{ restaurant_name }}
+        </div>
+
+        <div class="restaurant-rating">
+            <span class="gold-star">★</span>
+            <span class="review-text">{{ restaurant_rating }} ({{ restaurant_reviews }} reviews)</span>
+        </div>
+
+        <div class="restaurant-distance">
+            {{ restaurant_distance }}
+        </div>
+    </a>
+</body>
+
+</html>

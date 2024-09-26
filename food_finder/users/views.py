@@ -1,142 +1,70 @@
-from django.shortcuts import render, redirect, reverse
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import login, logout, authenticate
-from django.conf import settings
-from django.http import JsonResponse
-from django.views.generic.edit import FormView
-from django.views.generic.base import TemplateView
-from django.utils.decorators import method_decorator
-
-
-from food_finder.mixins import(
-	AjaxFormMixin, 
-	FormErrors,
-	RedirectParams,
-	)
-
-
-from .forms import (
-	UserForm,
-	AuthForm,
-	)
-
-result = "Error"
-message = "There was an error, please try again"
-
-
-class AccountView(TemplateView):
-	'''
-	Generic FormView with our mixin to display user account page
-	'''
-	template_name = "users/account.html"
-
-	@method_decorator(login_required)
-	def dispatch(self, *args, **kwargs):
-		return super().dispatch(*args, **kwargs)
+from django.contrib.auth import authenticate, login, logout
 
 
 
-# def profile_view(request):
-# 	'''
-# 	function view to allow users to update their profile
-# 	'''
-# 	user = request.user
-# 	up = user.userprofile
+# Create your views here.
+def signUpUser(request):
+    if request.user.is_authenticated:
+        return redirect("/")
+    if request.method == 'POST':
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
-# 	form = UserProfileForm(instance = up) 
+        # Handle error states
+        if not username or not password:
+            return render(request, "users/signup.html", {'error': 'Please fill in all fields'})
+        
+        if len(password) < 8:
+            return render(request, "users/signup.html", {'error': 'Password must be at least 8 characters long'})
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists.")
+            return render(request, "users/signup.html", {'error': 'Account with the username already exists'})
+        
+        # Passed error checks, so we create a new user and login user
+        user = User.objects.create_user(
+            username=username,
+            password=password
+        )
+        user.save()
 
-# 	if request.is_ajax():
-# 		form = UserProfileForm(data = request.POST, instance = up)
-# 		if form.is_valid():
-# 			obj = form.save()
-# 			obj.has_profile = True
-# 			obj.save()
-# 			result = "Success"
-# 			message = "Your profile has been updated"
-# 		else:
-# 			message = FormErrors(form)
-# 		data = {'result': result, 'message': message}
-# 		return JsonResponse(data)
+        user = authenticate(username=username, password=password)
+        login(request, user)
 
-# 	else:
-
-# 		context = {'form': form}
-# 		context['google_api_key'] = settings.GOOGLE_API_KEY
-# 		context['base_country'] = settings.BASE_COUNTRY
-
-# 		return render(request, 'users/profile.html', context)
-
-
-
-class SignUpView(AjaxFormMixin, FormView):
-	'''
-	Generic FormView with our mixin for user sign-up with reCAPTURE security
-	'''
-
-	template_name = "users/sign_up.html"
-	form_class = UserForm
-	success_url = "/"
-
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		return context
-
-	#over write the mixin logic to get, check and save reCAPTURE score
-	def form_valid(self, form):
-		response = super(AjaxFormMixin, self).form_valid(form)
-		if self.request.is_ajax():
-			obj = form.save()
-			obj.email = obj.username
-			obj.save()
-			obj.userprofile.save()
-			
-			login(self.request, obj, backend='django.contrib.auth.backends.ModelBackend')
-			
-			result = "Success"
-			message = "Thank you for signing up"
-			
-			data = {'result':result, 'message':message}
-			
-			return JsonResponse(data)
-		
-		return response
+        return redirect("/")
+    
+    # If not a post, just return empty form
+    return render(request, 'users/signup.html')
 
 
+def signInUser(request):
+    if request.user.is_authenticated:
+        return redirect("/")
+    if request.method == 'POST':
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
+        # Handle error states
+        if not username or not password:
+            return render(request, "users/signin.html", {'error': 'Please fill in all fields'})
+        
+        # Passed error checks, so login user
+        user = authenticate(username=username, password=password)
+        if (not user):
+            return render(request, 'users/signin.html', {'error': 'Wrong user credentials'})
+        login(request, user)
 
-class SignInView(AjaxFormMixin, FormView):
-	'''
-	Generic FormView with our mixin for user sign-in
-	'''
+        return redirect("/")
+    
+    # If not a post, just return empty form
+    return render(request, 'users/signin.html')
 
-	template_name = "users/sign_in.html"
-	form_class = AuthForm
-	success_url = "/"
-
-	def form_valid(self, form):
-		response = super(AjaxFormMixin, self).form_valid(form)	
-		if self.request.is_ajax():
-			username = form.cleaned_data.get('username')
-			password = form.cleaned_data.get('password')
-			#attempt to authenticate user
-			user = authenticate(self.request, username=username, password=password)
-			if user is not None:
-				login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
-				result = "Success"
-				message = 'You are now logged in'
-			else:
-				message = FormErrors(form)
-			data = {'result': result, 'message': message}
-			return JsonResponse(data)
-		return response
-
-
-
-
-def sign_out(request):
-	'''
-	Basic view for user sign out
-	'''
-	logout(request)
-	return redirect(reverse('users:sign-in'))
+def logoutUser(request):
+    logout(request)
+    request.session.clear()
+    return redirect("/")
