@@ -8,11 +8,14 @@ import googlemaps
 import http
 import json
 
-# this is temporary, change this to .env later
-API_KEY = "AIzaSyAB4mZM4o2Oe4_-ZHmH9gTI3o-gj00pEg4"
+API_KEY = settings.GOOGLE_PLACES_API_KEY
 
 def returnHomePage(request):
-    return render(request, 'main/home.html', {'isLoggedIn': False})
+    context = {
+        'google_places_api_key': API_KEY,
+        'isLoggedIn': False
+    }
+    return render(request, 'main/home.html', context)
 
 def restaurants_view(request):
     query = request.GET.get('query', '')
@@ -25,14 +28,14 @@ def restaurants_view(request):
 
     # Load the page if query is present
     if not query:
-        return render(request, 'main/restaurants.html', {'restaurants': [], 'query': 'restaurants', 'selected_rating': min_rating})
+        return render(request, 'main/restaurants.html', {'restaurants': [], 'query': 'restaurants', 'selected_rating': min_rating, 'google_places_api_key': API_KEY})
 
     # API call logic
     url = 'https://maps.googleapis.com/maps/api/place/textsearch/json'
     params = {
         'query': query,
         'type': 'restaurant',
-        'key': settings.GOOGLE_PLACES_API_KEY,
+        'key': API_KEY,
         'radius': radius_km * 50000
     }
 
@@ -46,7 +49,7 @@ def restaurants_view(request):
             if float(rating) >= float(min_rating):
                 photo_reference = result.get('photos', [{}])[0].get('photo_reference', '')
                 if photo_reference:
-                    image_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=300&photoreference={photo_reference}&key={settings.GOOGLE_PLACES_API_KEY}"
+                    image_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=300&photoreference={photo_reference}&key={API_KEY}"
                 else:
                     image_url = '/path/to/default/image.jpg'
 
@@ -73,7 +76,7 @@ def restaurants_view(request):
                     }
                     restaurants.append(restaurant)
 
-    return render(request, 'main/restaurants.html', {'restaurants': restaurants, 'query': query, 'selected_rating': min_rating})
+    return render(request, 'main/restaurants.html', {'restaurants': restaurants, 'query': query, 'selected_rating': min_rating, 'google_places_api_key': API_KEY})
 
 def get_driving_distance(origin_lat, origin_lng, dest_lat, dest_lng):
     url = 'https://maps.googleapis.com/maps/api/distancematrix/json'
@@ -82,7 +85,7 @@ def get_driving_distance(origin_lat, origin_lng, dest_lat, dest_lng):
         'destinations': f'{dest_lat},{dest_lng}',
         'mode': 'driving',
         'units': 'imperial',
-        'key': settings.GOOGLE_PLACES_API_KEY
+        'key': API_KEY
     }
     response = requests.get(url, params=params)
     data = response.json()
@@ -129,7 +132,8 @@ def restaurantDetailsPage(request, restaurant_id):
             "reviews": res["reviews"],
             "map": f"https://www.google.com/maps/embed/v1/place?key={API_KEY}&q=place_id:{restaurant_id}",
             "is_saved": is_saved,
-            "id": restaurant_id
+            "id": restaurant_id,
+            'google_places_api_key': API_KEY
         })
     except:
         return redirect("/") # if restaurant don't exist, redirect to home page
@@ -176,4 +180,4 @@ def favoritesPage(request):
             "rating": res["rating"],
             "reviews": res['user_ratings_total'],
         })
-    return render(request, 'main/favorites.html', {"favorites": restaurant_data})
+    return render(request, 'main/favorites.html', {"favorites": restaurant_data, 'google_places_api_key': API_KEY})

@@ -2,3 +2,4 @@ Django==5.1.1
 requests==2.32.3
 humanfriendly==10.0
 googlemaps==4.10.0
+python-dotenv==1.0.1
