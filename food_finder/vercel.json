@@ -12,4 +12,19 @@
       "dest": "food_finder/wsgi.py"
     }
   ]
+=======
+{
+  "builds": [
+    {
+      "src": "food_finder/wsgi.py",
+      "use": "@vercel/python",
+      "config": {"maxLambdaSize": "15mb", "runtime": "python3.12.2"}
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "food_finder/wsgi.py"
+    }
+  ]
 }
