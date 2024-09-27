@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block staticfiles %}
+    <link rel="stylesheet" href="{% static 'main/home.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% include 'components/navbar-transparent.html' %}
+    <header>
+        <div>
+            <!-- Desktop Nav Menu^ -->
+            <div class="search-section">
+                <h1>Find your next <span class = "highlight">delicious</span> meal!</h1>
+                {% include 'components/search_bar.html' %}
+            </div>
+        </div>
+    </header>
+{% endblock %}
