@@ -128,4 +128,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+load_dotenv()
 GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY')
