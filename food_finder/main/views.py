@@ -17,7 +17,7 @@ def returnHomePage(request):
 def restaurants_view(request):
     query = request.GET.get('query', '')
     min_rating = request.GET.get('rating', 0)
-    max_distance = float(request.GET.get('distance', 9999))
+    max_distance = float(request.GET.get('distance', 99999))
     user_latitude = request.GET.get('user_latitude')
     user_longitude = request.GET.get('user_longitude')
     radius_miles = 10
@@ -33,6 +33,7 @@ def restaurants_view(request):
         'query': query,
         'type': 'restaurant',
         'key': settings.GOOGLE_PLACES_API_KEY,
+        'location': f'{user_latitude},{user_longitude}',
         'radius': radius_km * 50000
     }
 
@@ -60,7 +61,7 @@ def restaurants_view(request):
                     distance = 'Loading...'
                     parsed_distance = 9999
 
-                if parsed_distance <= float(max_distance) or float(max_distance) == 9999:
+                if parsed_distance <= float(max_distance) or float(max_distance) == 99999:
                     restaurant = {
                         'image_url': image_url,
                         'name': result.get('name', 'Unknown'),
