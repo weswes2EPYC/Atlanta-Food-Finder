@@ -50,5 +50,3 @@ docs/_build/
 
 .venv
 .env
-
-staticfiles/
