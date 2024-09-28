@@ -126,7 +126,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Optional: You can specify directories containing your static files (if any)
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'food_finder/static'),
+    os.path.join(BASE_DIR, 'main/static'),
 ]
 
 
