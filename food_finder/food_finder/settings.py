@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-tg^4y_ay%y5s^xe$#98ks^#)ed2j&+!yfo#b)y4^och_4im3ei'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
 
@@ -121,6 +121,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# Location where Vercel will collect static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Optional: You can specify directories containing your static files (if any)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'food_finder/static'),
+    os.path.join(BASE_DIR, 'main/static'),
+]
 
 
 # Default primary key field type
@@ -128,4 +136,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+load_dotenv()
 GOOGLE_PLACES_API_KEY = os.getenv('GOOGLE_PLACES_API_KEY')
