@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-tg^4y_ay%y5s^xe$#98ks^#)ed2j&+!yfo#b)y4^och_4im3ei
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+if os.getenv('DJANGO_ENV') != 'foodr.pythonanywhere.com':
+    DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'foodr.pythonanywhere.com']
 
